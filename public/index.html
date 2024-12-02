@@ -29,6 +29,95 @@
     <meta property="og:type" content="website">
 
     <script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateIcon();
+        }
+
+        function updateIcon() {
+            const icon = document.getElementById('theme-icon');
+            const sunIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/sun.svg';
+            const moonIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/moon.svg';
+
+            if (document.documentElement.classList.contains('dark')) {
+                icon.innerHTML = `<img src="${sunIcon}" alt="Dark Mode" class="w-6 h-6">`;
+            } else {
+                icon.innerHTML = `<img src="${moonIcon}" alt="Light Mode" class="w-6 h-6">`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            updateIcon();
+        });
+
+        // Check if the app is running on localhost (development environment)
+        if (window.location.hostname === "localhost") {
+            document.getElementById("fetchButton").style.display = "inline-block";
+        } else {
+            document.getElementById("fetchButton").style.display = "none";
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 font-sans" style="font-family: 'JetBrains Mono', monospace;">
+    <div class="container mx-auto p-4">
+        <!-- Dark mode toggle button with icons -->
+        <div class="flex justify-end mb-4">
+            <button onclick="scrapeData()" id="fetchButton"
+                class="text-black dark:text-white bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg mr-3">
+                Fetch
+            </button>
+            <button onclick="toggleDarkMode()"
+                class="text-gray-800 dark:text-gray-400 bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg">
+                <span id="theme-icon">
+                    <!-- Initial icon will be set here by JavaScript -->
+                </span>
+            </button>
+        </div>
+
+        <div class="max-w-md mx-auto mt-10 mb-5">
+            <div class="dark:bg-gray-900 font-sans mb-4">
+                <h1 class="text-3xl font-bold text-black dark:text-white"
+                    style="font-family: 'JetBrains Mono', monospace;">FindPHP</h1>
+            </div>
+
+            <div class="relative">
+                <label for="default-search"
+                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" placeholder="Search..."
+                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                <button onclick="searchLinks()"
+                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div id="results" class="max-w-md mx-auto">
+            <!-- Search results will be displayed here -->
+        </div>
+
+        <div id="pagination" class="flex justify-center mt-4 space-x-4">
+            <!-- Pagination buttons will be added here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+    <script>
         let currentPage = 1;
         const limit = 10;
         let totalPages = 1;
@@ -88,87 +177,7 @@
                     alert('Failed to fetch data');
                 });
         }
-
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-            updateIcon();
-        }
-
-        function updateIcon() {
-            const icon = document.getElementById('theme-icon');
-            const sunIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/sun.svg';
-            const moonIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/moon.svg';
-
-            if (document.documentElement.classList.contains('dark')) {
-                icon.innerHTML = `<img src="${sunIcon}" alt="Dark Mode" class="w-6 h-6">`;
-            } else {
-                icon.innerHTML = `<img src="${moonIcon}" alt="Light Mode" class="w-6 h-6">`;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-            updateIcon();
-        });
     </script>
-</head>
-
-<body class="bg-gray-100 dark:bg-gray-900 font-sans" style="font-family: 'JetBrains Mono', monospace;">
-    <div class="container mx-auto p-4">
-        <!-- Dark mode toggle button with icons -->
-        <div class="flex justify-end mb-4">
-            <button onclick="scrapeData()"
-                class="text-black dark:text-white bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg mr-3">
-                Fetch
-            </button>
-            <button onclick="toggleDarkMode()"
-                class="text-gray-800 dark:text-gray-400 bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg">
-                <span id="theme-icon">
-                    <!-- Initial icon will be set here by JavaScript -->
-                </span>
-            </button>
-        </div>
-
-        <div class="max-w-md mx-auto mt-10 mb-5">
-            <div class="dark:bg-gray-900 font-sans mb-4">
-                <h1 class="text-3xl font-bold text-black dark:text-white"
-                    style="font-family: 'JetBrains Mono', monospace;">FindPHP</h1>
-            </div>
-
-            <div class="relative">
-                <label for="default-search"
-                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                    </svg>
-                </div>
-                <input type="text" id="searchInput" placeholder="Search..."
-                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                <button onclick="searchLinks()"
-                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    Search
-                </button>
-            </div>
-        </div>
-
-        <div id="results" class="max-w-md mx-auto">
-            <!-- Search results will be displayed here -->
-        </div>
-
-        <div id="pagination" class="flex justify-center mt-4 space-x-4">
-            <!-- Pagination buttons will be added here -->
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </body>
 
 </html>
