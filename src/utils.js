@@ -1,10 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+// utils.js
+import fs from 'fs';
+import path from 'path';
 
-const readLinks = () => {
-    const filePath = path.join(__dirname, '../public/json/data.json');
+export const readLinks = () => {
+    const filePath = path.join(__dirname, '..', 'public', 'json', 'data.json');
     const rawData = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(rawData);
 };
-
-module.exports = { readLinks };
