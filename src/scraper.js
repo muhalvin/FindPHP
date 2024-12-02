@@ -37,6 +37,7 @@ export async function scrapeData() {
 async function saveDataToJson(data) {
     try {
         const jsonData = JSON.stringify(data, null, 2);
+
         fs.writeFileSync("./public/json/data.json", jsonData);
         console.log("Data saved to data.json");
     } catch (error) {

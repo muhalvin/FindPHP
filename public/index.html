@@ -15,6 +15,7 @@
         const limit = 10;
         let totalPages = 1;
 
+        // Function to search links
         function searchLinks() {
             const query = document.getElementById('searchInput').value;
             fetch(`/search?q=${query}&page=${currentPage}&limit=${limit}`)
@@ -53,17 +54,18 @@
                 });
         }
 
+        // Change page function
         function changePage(page) {
             currentPage = page;
             searchLinks();
         }
 
+        // Scrape data and reload
         function scrapeData() {
             fetch(`/scrape`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-
                     window.location.href = '/';
                 })
                 .catch(error => {
@@ -72,7 +74,7 @@
                 });
         }
 
-
+        // Toggle dark mode
         function toggleDarkMode() {
             const html = document.documentElement;
             html.classList.toggle('dark');
@@ -80,18 +82,11 @@
             updateIcon();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-            updateIcon();
-        });
-
+        // Update the dark/light mode icon
         function updateIcon() {
             const icon = document.getElementById('theme-icon');
-            const sunIcon = 'assets/sun.svg';
-            const moonIcon = 'assets/moon.svg';
+            const sunIcon = './assets/sun.svg';
+            const moonIcon = './assets/moon.svg';
 
             if (document.documentElement.classList.contains('dark')) {
                 icon.innerHTML = `<img src="${sunIcon}" alt="Dark Mode" class="w-6 h-6">`;
@@ -99,6 +94,15 @@
                 icon.innerHTML = `<img src="${moonIcon}" alt="Light Mode" class="w-6 h-6">`;
             }
         }
+
+        // Apply saved theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            updateIcon();
+        });
     </script>
 </head>
 
@@ -144,7 +148,7 @@
         </div>
 
         <div id="results" class="max-w-md mx-auto">
-            <!-- Hasil akan ditampilkan di sini -->
+            <!-- Search results will be displayed here -->
         </div>
 
         <div id="pagination" class="flex justify-center mt-4 space-x-4">
