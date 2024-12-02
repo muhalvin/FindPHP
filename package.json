@@ -1,5 +1,8 @@
 {
   "name": "findphp",
+  "version": "1.0.0",
+  "description": "PHP Downloads Finder",
+  "main": "src/index.js",
   "module": "index.js",
   "type": "module",
   "devDependencies": {
