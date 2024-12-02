@@ -15,7 +15,6 @@
         const limit = 10;
         let totalPages = 1;
 
-        // Function to search links
         function searchLinks() {
             const query = document.getElementById('searchInput').value;
             fetch(`/search?q=${query}&page=${currentPage}&limit=${limit}`)
@@ -54,13 +53,11 @@
                 });
         }
 
-        // Change page function
         function changePage(page) {
             currentPage = page;
             searchLinks();
         }
 
-        // Scrape data and reload
         function scrapeData() {
             fetch(`/scrape`)
                 .then(response => response.json())
@@ -74,7 +71,6 @@
                 });
         }
 
-        // Toggle dark mode
         function toggleDarkMode() {
             const html = document.documentElement;
             html.classList.toggle('dark');
@@ -82,11 +78,10 @@
             updateIcon();
         }
 
-        // Update the dark/light mode icon
         function updateIcon() {
             const icon = document.getElementById('theme-icon');
-            const sunIcon = '/assets/sun.svg';
-            const moonIcon = '/assets/moon.svg';
+            const sunIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/sun.svg';
+            const moonIcon = 'https://raw.githubusercontent.com/muhalvin/FindPHP/0456ab799e932e3501d812f92bae058a70a9cb71/public/assets/moon.svg';
 
             if (document.documentElement.classList.contains('dark')) {
                 icon.innerHTML = `<img src="${sunIcon}" alt="Dark Mode" class="w-6 h-6">`;
@@ -95,7 +90,6 @@
             }
         }
 
-        // Apply saved theme on page load
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
