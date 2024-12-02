@@ -1,10 +1,10 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const fs = require('fs');
+import fs from 'fs';
+import * as cheerio from 'cheerio';
+import axios from 'axios';
 
 const url = "https://windows.php.net/downloads/releases/archives/";
 
-async function scrapeData() {
+export async function scrapeData() {
     try {
         // Fetch HTML from the page
         const { data } = await axios.get(url);
@@ -43,5 +43,3 @@ async function saveDataToJson(data) {
         console.error("Error saving data:", error);
     }
 }
-
-module.exports = { scrapeData };
