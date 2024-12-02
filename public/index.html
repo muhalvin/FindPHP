@@ -56,12 +56,14 @@
             updateIcon();
         });
 
-        // Check if the app is running on localhost (development environment)
-        if (window.location.hostname === "localhost") {
-            document.getElementById("fetchButton").style.display = "inline-block";
-        } else {
-            document.getElementById("fetchButton").style.display = "none";
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if the app is running on localhost (development environment)
+            if (window.location.hostname === "localhost") {
+                document.getElementById("fetchButton").style.display = "inline-block";
+            } else {
+                document.getElementById("fetchButton").style.display = "none";
+            }
+        });
     </script>
 </head>
 
