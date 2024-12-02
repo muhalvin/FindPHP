@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FindPHP</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+
+    <script>
+        let currentPage = 1;
+        const limit = 10;
+        let totalPages = 1;
+
+        function searchLinks() {
+            const query = document.getElementById('searchInput').value;
+            fetch(`/search?q=${query}&page=${currentPage}&limit=${limit}`)
+                .then(response => response.json())
+                .then(data => {
+                    totalPages = data.totalPages;
+
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
+
+                    data.results.forEach(item => {
+                        const linkElement = document.createElement('div');
+                        linkElement.className = "p-4 mb-3 bg-white shadow rounded-lg dark:bg-gray-800 dark:text-white";
+                        linkElement.innerHTML = `<a href="${item.href}" target="_blank" class="text-blue-500 hover:underline dark:text-blue-400">${item.filename}</a>`;
+                        resultsDiv.appendChild(linkElement);
+                    });
+
+                    const paginationDiv = document.getElementById('pagination');
+                    paginationDiv.innerHTML = '';
+
+                    if (currentPage > 1) {
+                        paginationDiv.innerHTML += `<button onclick="changePage(1)" class="px-4 py-2 bg-blue-500 text-white rounded-lg"><<</button>`;
+                    }
+
+                    const maxPagesToShow = 3;
+                    const maxPageLimit = Math.min(totalPages, currentPage + maxPagesToShow - 1);
+                    const pageStart = Math.max(1, currentPage - (maxPagesToShow - 1));
+
+                    for (let i = pageStart; i <= maxPageLimit; i++) {
+                        paginationDiv.innerHTML += `<button onclick="changePage(${i})" class="px-4 py-2 ${i === currentPage ? 'bg-blue-600' : 'bg-blue-500'} text-white rounded-lg">${i}</button>`;
+                    }
+
+                    if (currentPage < totalPages) {
+                        paginationDiv.innerHTML += `<button onclick="changePage(${totalPages})" class="px-4 py-2 bg-blue-500 text-white rounded-lg">>></button>`;
+                    }
+                });
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            searchLinks();
+        }
+
+        function scrapeData() {
+            fetch(`/scrape`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error scraping data:', error);
+                    alert('Failed to fetch data');
+                });
+        }
+
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateIcon();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            updateIcon();
+        });
+
+        function updateIcon() {
+            const icon = document.getElementById('theme-icon');
+            const sunIcon = 'assets/sun.svg';
+            const moonIcon = 'assets/moon.svg';
+
+            if (document.documentElement.classList.contains('dark')) {
+                icon.innerHTML = `<img src="${sunIcon}" alt="Dark Mode" class="w-6 h-6">`;
+            } else {
+                icon.innerHTML = `<img src="${moonIcon}" alt="Light Mode" class="w-6 h-6">`;
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 font-sans" style="font-family: 'JetBrains Mono', monospace;">
+    <div class="container mx-auto p-4">
+        <!-- Dark mode toggle button with icons -->
+        <div class="flex justify-end mb-4">
+            <button onclick="scrapeData()"
+                class="text-black dark:text-white bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg mr-3">
+                Fetch
+            </button>
+            <button onclick="toggleDarkMode()"
+                class="text-gray-800 dark:text-gray-400 bg-gray-400 dark:bg-gray-700 px-4 py-2 rounded-lg">
+                <span id="theme-icon">
+                    <!-- Initial icon will be set here by JavaScript -->
+                </span>
+            </button>
+        </div>
+
+        <div class="max-w-md mx-auto mt-10 mb-5">
+            <div class="dark:bg-gray-900 font-sans mb-4">
+                <h1 class="text-3xl font-bold text-black dark:text-white"
+                    style="font-family: 'JetBrains Mono', monospace;">FindPHP</h1>
+            </div>
+
+            <div class="relative">
+                <label for="default-search"
+                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" placeholder="Search..."
+                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                <button onclick="searchLinks()"
+                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div id="results" class="max-w-md mx-auto">
+            <!-- Hasil akan ditampilkan di sini -->
+        </div>
+
+        <div id="pagination" class="flex justify-center mt-4 space-x-4">
+            <!-- Pagination buttons will be added here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</body>
+
+</html>
